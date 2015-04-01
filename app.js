@@ -1,5 +1,6 @@
-angular.module('redditApp', ['ui.router'])
+angular.module('redditApp', ['ui.router', 'redditServices'])
 
+//routing the front end
 .config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider){
 	$stateProvider
 	.state('home', {
@@ -16,28 +17,29 @@ angular.module('redditApp', ['ui.router'])
 }])
 
 
-.controller('MainCtrl', ['$scope', function($scope){
-	// $scope.posts =[
-	// {title:'post1', upvotes : 5},
-	// {title:'post2', upvotes : 7},
-	// {title:'post3', upvotes: 10},
-	// {title:'post4', upvotes : 15}
-	// ];
-	$scope.posts = []
+.controller('MainCtrl', function($scope, redditPosts){
+	
+	//accessing redditPosts services
+	$scope.posts = redditPosts.getPostArray();
+	// console.log($scope.posts)
 
+	// add posts 
 	$scope.addPost = function(){
 		$scope.posts.push({title: $scope.title, link: $scope.link, upvotes : 0})
 		$scope.title = '';
 		$scope.link = '';
-		if($scope.title === '') return false;
-}
+		if($scope.title === '') return null;
+	}
+
+
+
 	//adds up 1 vote every click
 	$scope.addUpvotes = function(post){
 		post.upvotes += 1;
 	}
 
-}]);
+});
 
-// .controller('Posts', ['$scope', '$stateParams' function($scope,$stateParams){
+// .controller('PostsCtrl', function($scope,$stateParams,redditPosts){
 
-// }])
+// })
