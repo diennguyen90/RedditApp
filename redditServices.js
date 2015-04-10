@@ -2,7 +2,7 @@ angular.module('redditServices', [])
 
 .factory('redditPosts', function(){
 	var a = {
-		posts: []
+		posts: [{title: 'google', upvote:0}, {title:'facebook', upvote: 0}]
 	}
 
 	return{

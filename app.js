@@ -1,45 +1,44 @@
-angular.module('redditApp', ['ui.router', 'redditServices'])
+'use strict';
+angular.module('redditApp', ['ngRoute', 'firebase'])
 
 //routing the front end
-.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider){
-	$stateProvider
-	.state('home', {
-		url: '/home',
-		templateUrl: '/home.html',
-		controller: 'MainCtrl'
-	})
-	.state('posts', {
-		url:'/posts/{id}',
-		templateUrl: '/post.html',
-		controller: 'PostsCtrl'
-	});
-	$urlRouterProvider.otherwise('home');
+.config(function($routeProvider){
+	$routeProvider
+		.when('/', {
+			templateUrl: 'home.html',
+			controller: 'MainCtrl'
+		})
+		.when('/posts/:title', {
+			templateUrl: 'post.html',
+			controller: 'PostCtrl'
+		})
+		 .otherwise({
+        redirectTo: '/'
+      });
+})
+
+
+.controller('MainCtrl',['$scope','$firebaseArray', function($scope,$firebaseArray){
+   // $scope.posts = redditPosts.getPostArray();
+     var ref = new Firebase('https://dienspost.firebaseio.com');
+
+     $scope.posts = $firebaseArray(ref)
+    $scope.addPost = function(){
+    	 $scope.posts.$add({
+    	 	title: $scope.title,
+    	 	body: $scope.body,
+    	 	upvotes: 0
+    	 });
+    }
+	//adds up 1 vote every click
+	// $scope.addUpvotes = function(post){
+	// 	$scope.post = +1;
+	// };
+
 }])
 
-
-.controller('MainCtrl', function($scope, redditPosts){
-	
-	//accessing redditPosts services
-	$scope.posts = redditPosts.getPostArray();
-	// console.log($scope.posts)
-
-	// add posts 
-	$scope.addPost = function(){
-		$scope.posts.push({title: $scope.title, link: $scope.link, upvotes : 0})
-		$scope.title = '';
-		$scope.link = '';
-		if($scope.title === '') return null;
-	}
+.controller('PostsCtrl', function($scope,$routeParams){
 
 
-
-	//adds up 1 vote every click
-	$scope.addUpvotes = function(post){
-		post.upvotes += 1;
-	}
 
 });
-
-// .controller('PostsCtrl', function($scope,$stateParams,redditPosts){
-
-// })
